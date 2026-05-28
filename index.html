@@ -1,43 +1,759 @@
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MINUTES AI PRO</title>
+<title>MINUTES AI PRO | AI議事録システム</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+:root{
+  --bg:#0b1020;
+  --card:#131a2e;
+  --card2:#1a233d;
+  --line:rgba(255,255,255,0.08);
+  --text:#f3f5ff;
+  --sub:#b8c2e0;
+  --accent:#5b8cff;
+  --green:#28c76f;
+  --yellow:#ffb020;
+  --red:#ff5c5c;
+  --radius:18px;
+}
+
 body{
-  background:#0b1020;
-  color:white;
-  font-family:sans-serif;
-  padding:40px;
+  background:linear-gradient(180deg,#081120,#10182d);
+  color:var(--text);
+  font-family:'Inter','Noto Sans JP',sans-serif;
+  min-height:100dvh;
+  color-scheme:dark;
+}
+
+.container{
+  max-width:1700px;
+  margin:auto;
+  padding:24px;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+  gap:12px;
+}
+
+.logo{
+  font-size:28px;
+  font-weight:800;
+  letter-spacing:-1px;
+}
+
+.logo span{
+  color:var(--accent);
+}
+
+.header-right{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.top-btn{
+  border:none;
+  padding:12px 18px;
+  border-radius:14px;
+  background:var(--card);
+  color:var(--text);
+  cursor:pointer;
+  border:1px solid var(--line);
+  transition:.2s;
+}
+
+.top-btn:hover{
+  transform:translateY(-2px);
+  background:var(--card2);
+}
+
+.top-btn:active{
+  transform:scale(.98);
+}
+
+.record-btn{
+  background:linear-gradient(135deg,#ff5c5c,#ff7d7d);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:360px 1fr 420px;
+  gap:20px;
 }
 
 .card{
-  background:#131a2e;
+  background:rgba(19,26,46,0.9);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
   padding:20px;
-  border-radius:16px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  transition:.2s;
 }
 
-button{
-  padding:12px 18px;
-  border:none;
-  border-radius:12px;
-  background:#5b8cff;
-  color:white;
-  cursor:pointer;
+.card:hover{
+  transform:translateY(-2px);
 }
+
+.card-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:700;
+  margin-bottom:16px;
+}
+
+.meeting-info{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.info-box{
+  background:var(--card2);
+  border-radius:14px;
+  padding:14px;
+}
+
+.info-label{
+  font-size:12px;
+  color:var(--sub);
+  margin-bottom:6px;
+}
+
+.info-value{
+  font-size:14px;
+  font-weight:600;
+}
+
+.live-box{
+  max-height:min(620px,70vh);
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.live-item{
+  background:var(--card2);
+  border-radius:16px;
+  padding:16px;
+  border-left:4px solid var(--accent);
+}
+
+.live-item.red{
+  border-color:var(--red);
+}
+
+.live-item.yellow{
+  border-color:var(--yellow);
+}
+
+.live-item.green{
+  border-color:var(--green);
+}
+
+.speaker{
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.badge{
+  font-size:11px;
+  padding:4px 8px;
+  border-radius:30px;
+  background:rgba(255,255,255,0.08);
+}
+
+.text{
+  line-height:1.8;
+  color:#eef2ff;
+  font-size:14px;
+}
+
+.ai-panel{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.ai-box{
+  background:var(--card2);
+  border-radius:16px;
+  padding:16px;
+}
+
+.ai-section-title{
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:12px;
+}
+
+.todo-item{
+  padding:12px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.04);
+  margin-bottom:10px;
+}
+
+.todo-person{
+  color:#8fb1ff;
+  font-size:12px;
+  margin-top:6px;
+}
+
+.preview{
+  margin-top:20px;
+}
+
+.minutes-sheet{
+  background:white;
+  color:#111;
+  border-radius:20px;
+  padding:40px;
+  margin-top:20px;
+}
+
+.sheet-title{
+  font-size:30px;
+  font-weight:800;
+  margin-bottom:20px;
+}
+
+.sheet-header{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:24px;
+}
+
+.sheet-box{
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:12px;
+}
+
+.sheet-label{
+  font-size:11px;
+  color:#666;
+  margin-bottom:6px;
+}
+
+.sheet-value{
+  font-size:14px;
+  font-weight:600;
+}
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+.table{
+  width:100%;
+  border-collapse:collapse;
+  margin-bottom:24px;
+}
+
+.table th{
+  background:#eef3ff;
+  padding:12px;
+  border:1px solid #dbe3ff;
+  text-align:left;
+}
+
+.table td{
+  padding:12px;
+  border:1px solid #e5e7eb;
+}
+
+.section{
+  margin-bottom:28px;
+}
+
+.section-title{
+  font-size:20px;
+  font-weight:700;
+  margin-bottom:14px;
+  border-left:6px solid var(--accent);
+  padding-left:12px;
+}
+
+.decision{
+  background:#eef8f1;
+  border:1px solid #cdeed8;
+  padding:14px;
+  border-radius:14px;
+  margin-top:12px;
+}
+
+.action{
+  background:#fff7e8;
+  border:1px solid #ffe0a6;
+  padding:14px;
+  border-radius:14px;
+  margin-top:12px;
+}
+
+.footer-btns{
+  display:flex;
+  gap:12px;
+  margin-top:20px;
+  flex-wrap:wrap;
+}
+
+.export-btn{
+  flex:1;
+  border:none;
+  padding:14px;
+  border-radius:14px;
+  font-weight:700;
+  cursor:pointer;
+  color:white;
+}
+
+.excel{
+  background:#1f8f55;
+}
+
+.pdf{
+  background:#d9363e;
+}
+
+.word{
+  background:#2563eb;
+}
+
+.wave{
+  display:flex;
+  align-items:end;
+  gap:4px;
+  height:50px;
+}
+
+.wave span{
+  width:6px;
+  border-radius:30px;
+  background:var(--accent);
+  animation:wave 1.4s infinite ease-in-out;
+  will-change:height;
+}
+
+.wave span:nth-child(2){
+  animation-delay:0.1s
+}
+
+.wave span:nth-child(3){
+  animation-delay:0.2s
+}
+
+.wave span:nth-child(4){
+  animation-delay:0.3s
+}
+
+.wave span:nth-child(5){
+  animation-delay:0.4s
+}
+
+@keyframes wave{
+  0%,100%{
+    height:10px
+  }
+  50%{
+    height:40px
+  }
+}
+
+::-webkit-scrollbar{
+  width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#2d3a63;
+  border-radius:20px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .wave span{
+    animation:none;
+  }
+}
+
+@media(max-width:1200px){
+  .grid{
+    grid-template-columns:320px 1fr;
+  }
+}
+
+@media(max-width:900px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .sheet-header{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
 </style>
 </head>
+
 <body>
 
+<div class="container">
+
+<div class="header">
+
+<div class="logo">
+MINUTES <span>AI PRO</span>
+</div>
+
+<div class="header-right">
+
+<button type="button" class="top-btn">
+<i class="ti ti-cloud"></i>
+Zoom連携
+</button>
+
+<button type="button" class="top-btn">
+<i class="ti ti-brand-line"></i>
+LINE WORKS
+</button>
+
+<button type="button" class="top-btn record-btn">
+<i class="ti ti-microphone"></i>
+録音開始
+</button>
+
+</div>
+</div>
+
+<div class="grid">
+
+<div>
+
 <div class="card">
-  <h1>MINUTES AI PRO</h1>
 
-  <p>AI議事録システム</p>
+<div class="card-title">
+<i class="ti ti-calendar-event"></i>
+会議情報
+</div>
 
-  <button>録音開始</button>
+<div class="meeting-info">
+
+<div class="info-box">
+<div class="info-label">会議名</div>
+<div class="info-value">営業会議</div>
+</div>
+
+<div class="info-box">
+<div class="info-label">開催日</div>
+<div class="info-value">2026/05/28</div>
+</div>
+
+<div class="info-box">
+<div class="info-label">開始時間</div>
+<div class="info-value">09:00</div>
+</div>
+
+<div class="info-box">
+<div class="info-label">参加人数</div>
+<div class="info-value">12名</div>
+</div>
+
+</div>
+</div>
+
+<div class="card" style="margin-top:20px">
+
+<div class="card-title">
+<i class="ti ti-wave-sine"></i>
+音声解析
+</div>
+
+<div class="wave">
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+</div>
+
+<div style="margin-top:18px;color:var(--sub);line-height:1.8;font-size:14px">
+Whisper AI によるリアルタイム音声解析中...
+</div>
+
+</div>
+
+<div class="card" style="margin-top:20px">
+
+<div class="card-title">
+<i class="ti ti-chart-bar"></i>
+AI分析
+</div>
+
+<div class="info-box" style="margin-bottom:10px">
+<div class="info-label">決定事項</div>
+<div class="info-value">8件</div>
+</div>
+
+<div class="info-box" style="margin-bottom:10px">
+<div class="info-label">TODO</div>
+<div class="info-value">12件</div>
+</div>
+
+<div class="info-box">
+<div class="info-label">重要議題</div>
+<div class="info-value">売上計画</div>
+</div>
+
+</div>
+
+</div>
+
+<div>
+
+<div class="card">
+
+<div class="card-title">
+<i class="ti ti-message-circle"></i>
+リアルタイム議事録
+</div>
+
+<div class="live-box">
+
+<div class="live-item red">
+<div class="speaker">
+玉城部長
+<span class="badge">決定事項</span>
+</div>
+
+<div class="text">
+来月から営業訪問件数を週15件へ増やします。各担当は毎週金曜日までに進捗を共有してください。
+</div>
+</div>
+
+<div class="live-item yellow">
+<div class="speaker">
+金城
+<span class="badge">要確認</span>
+</div>
+
+<div class="text">
+展示会の見積金額について再確認が必要です。来週までに提出します。
+</div>
+</div>
+
+<div class="live-item green">
+<div class="speaker">
+宮城
+<span class="badge">アクション</span>
+</div>
+
+<div class="text">
+新規顧客リストを整理してチーム全体へ共有します。
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<div>
+
+<div class="card ai-panel">
+
+<div class="card-title">
+<i class="ti ti-robot"></i>
+AIアシスタント
+</div>
+
+<div class="ai-box">
+
+<div class="ai-section-title">
+AI自動要約
+</div>
+
+<div style="line-height:1.9;color:#dbe4ff;font-size:14px">
+今回の会議では営業件数強化、新規顧客開拓、展示会対応について議論されました。来月の営業数値目標を再設定し、各担当へタスクを割り振っています。
+</div>
+
+</div>
+
+<div class="ai-box">
+
+<div class="ai-section-title">
+TODO一覧
+</div>
+
+<div class="todo-item">
+展示会見積確認
+<div class="todo-person">
+担当：金城 / 期限：6月2日
+</div>
+</div>
+
+<div class="todo-item">
+顧客リスト共有
+<div class="todo-person">
+担当：宮城 / 期限：5月31日
+</div>
+</div>
+
+<div class="todo-item">
+営業件数進捗確認
+<div class="todo-person">
+担当：全部署 / 毎週金曜
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="preview">
+
+<div class="minutes-sheet">
+
+<div class="sheet-title">
+営業会議議事録
+</div>
+
+<div class="sheet-header">
+
+<div class="sheet-box">
+<div class="sheet-label">開催日</div>
+<div class="sheet-value">2026/05/28</div>
+</div>
+
+<div class="sheet-box">
+<div class="sheet-label">場所</div>
+<div class="sheet-value">本社会議室</div>
+</div>
+
+<div class="sheet-box">
+<div class="sheet-label">参加者</div>
+<div class="sheet-value">12名</div>
+</div>
+
+<div class="sheet-box">
+<div class="sheet-label">議事録担当</div>
+<div class="sheet-value">MINUTES AI</div>
+</div>
+
+</div>
+
+<div class="table-wrap">
+
+<table class="table">
+
+<tr>
+<th>No</th>
+<th>議題</th>
+<th>状態</th>
+<th>重要度</th>
+</tr>
+
+<tr>
+<td>1</td>
+<td>営業件数強化</td>
+<td>完了</td>
+<td>★★★★★</td>
+</tr>
+
+<tr>
+<td>2</td>
+<td>展示会準備</td>
+<td>進行中</td>
+<td>★★★★☆</td>
+</tr>
+
+<tr>
+<td>3</td>
+<td>新規顧客開拓</td>
+<td>要対応</td>
+<td>★★★★☆</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="section">
+
+<div class="section-title">
+営業件数強化
+</div>
+
+<div style="line-height:1.9">
+来月より営業訪問件数を週15件へ増加する方針が決定された。各担当者は毎週金曜日までに進捗を共有する。
+</div>
+
+<div class="decision">
+<strong>決定事項</strong>
+<br><br>
+営業件数を週15件へ増加する。
+</div>
+
+<div class="action">
+<strong>アクションアイテム</strong>
+<br><br>
+各担当が営業進捗を毎週提出。
+</div>
+
+</div>
+
+<div class="footer-btns">
+
+<button class="export-btn excel">
+Excel出力
+</button>
+
+<button class="export-btn pdf">
+PDF出力
+</button>
+
+<button class="export-btn word">
+Word出力
+</button>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </body>
 </html>
+```
